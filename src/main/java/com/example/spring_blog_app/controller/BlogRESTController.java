@@ -1,6 +1,7 @@
 package com.example.spring_blog_app.controller;
 
 import com.example.spring_blog_app.model.Category;
+import com.example.spring_blog_app.model.Post;
 import com.example.spring_blog_app.model.User;
 import com.example.spring_blog_app.service.PostService;
 import com.example.spring_blog_app.service.UserService;
@@ -76,5 +77,10 @@ public class BlogRESTController {
                 postService.addPost(title, content, category, userOptional.get());
             }
         }
+    }
+
+    @GetMapping("/posts")
+    public List<Post> getAllPosts(){
+        return postService.getAllPosts();
     }
 }
