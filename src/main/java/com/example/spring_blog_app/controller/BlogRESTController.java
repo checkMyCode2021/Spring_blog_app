@@ -71,6 +71,10 @@ public class BlogRESTController {
             @RequestParam("userId") int userId
     ) {
         Optional<User> userOptional = userService.getUserById(userId);
-        userOptional.ifPresent(user -> postService.addPost(title, content, category, user));
+        if (userOptional.isPresent()) {
+            if (userOptional.get().isStatus()) {
+                postService.addPost(title, content, category, userOptional.get());
+            }
+        }
     }
 }
