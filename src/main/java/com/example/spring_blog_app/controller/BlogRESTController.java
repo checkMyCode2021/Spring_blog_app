@@ -10,16 +10,53 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class BlogRESTController {
 
-    @Autowired
     UserService userService;
-    @Autowired
     PostService postService;
+
+    @Autowired
+    public BlogRESTController(UserService userService, PostService postService) {
+        this.userService = userService;
+        this.postService = postService;
+    }
+
+    @GetMapping("/posts/byCategory")
+    public List<Post> getPostByCategory(
+            @RequestParam("category") Category category
+    ){
+        return postService.getPostsByCategory(category);
+    }
+
+    @GetMapping("/posts/byCategoryAndAuthor")
+    public List<Post> getPostsByCategoryAndAuthor(
+            @RequestParam("category") Category category,
+            @RequestParam("author") int userId
+    ) {
+        if (userService.getUserById(userId).isPresent()) {
+            return postService.getPostsByCategoryAndAuthor(category, userService.getUserById(userId).get());
+        }
+        return new ArrayList<>();
+    }
+
+    @GetMapping("/posts/keyWordsSearch")
+    public List<Post> getPostsByTitleLikeOrContentLike(String keyWords){
+        Set<Post> postSet = new HashSet<>();
+        for (String keyWord:keyWords.split(",")) {
+            postSet.addAll(postService.getPostsByTitleLikeOrContentLike(keyWord));
+        }
+        List<Post> filteredList = new ArrayList<>();
+        filteredList.addAll(postSet);
+        return filteredList;
+    }
+
+    @GetMapping("/posts/stats")
+    public String getStats(){
+        return postService.getPostsStats();
+    }
 
     @GetMapping("/")
     public String home() {
