@@ -21,6 +21,10 @@ public class PostService {
         postRepository.save(new Post(title, content, LocalDateTime.now(),category, author));
     }
 
+    public void deletePost(int postId){
+        postRepository.deleteById(postId);
+    }
+
     public List<Post> getAllPosts(){
        return postRepository.findAll(Sort.by(Sort.Direction.DESC,"dateAdded"));
     }

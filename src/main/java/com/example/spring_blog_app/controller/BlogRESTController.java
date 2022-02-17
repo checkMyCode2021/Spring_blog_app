@@ -120,4 +120,14 @@ public class BlogRESTController {
     public List<Post> getAllPosts(){
         return postService.getAllPosts();
     }
+
+    @DeleteMapping("/post/delete")
+    public void deletePostById(
+            @RequestParam("postId") int postId
+    ) {
+        try {
+            postService.deletePost(postId);
+        } catch (EmptyResultDataAccessException e) {
+        }
+    }
 }
