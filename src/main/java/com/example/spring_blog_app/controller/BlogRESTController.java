@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@RequestMapping("/api")
 @RestController
 public class BlogRESTController {
 
@@ -68,8 +69,12 @@ public class BlogRESTController {
             @RequestParam("email") String email,
             @RequestParam("password") String password
     ) {
+        if(userService.getUserEmail(email).isPresent()){
+        return;
+        } else {
         User user = new User(email, password, LocalDateTime.now(), false);
         userService.registerUser(user);
+        }
     }
 
     @PutMapping("/user/registerConfirm")
