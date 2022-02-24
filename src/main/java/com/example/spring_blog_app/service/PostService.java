@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -19,10 +20,6 @@ public class PostService {
 
     public void addPost(String title, String content, Category category, User author){
         postRepository.save(new Post(title, content, LocalDateTime.now(),category, author));
-    }
-
-    public void deletePost(int postId){
-        postRepository.deleteById(postId);
     }
 
     public List<Post> getAllPosts(){
@@ -48,5 +45,9 @@ public class PostService {
                 }
                 output += "}";
                 return output;
+    }
+
+    public Optional<Post> getPostById(int postId){
+        return postRepository.findById(postId);
     }
 }

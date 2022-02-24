@@ -69,13 +69,10 @@ public class BlogRESTController {
             @RequestParam("email") String email,
             @RequestParam("password") String password
     ) {
-        if(userService.getUserEmail(email).isPresent()){
-        return;
-        } else {
         User user = new User(email, password, LocalDateTime.now(), false);
         userService.registerUser(user);
-        }
     }
+
 
     @PutMapping("/user/registerConfirm")
     public void registerConfirm(
@@ -124,15 +121,5 @@ public class BlogRESTController {
     @GetMapping("/posts")
     public List<Post> getAllPosts(){
         return postService.getAllPosts();
-    }
-
-    @DeleteMapping("/post/delete")
-    public void deletePostById(
-            @RequestParam("postId") int postId
-    ) {
-        try {
-            postService.deletePost(postId);
-        } catch (EmptyResultDataAccessException e) {
-        }
     }
 }
