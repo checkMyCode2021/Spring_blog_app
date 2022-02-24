@@ -69,13 +69,10 @@ public class BlogRESTController {
             @RequestParam("email") String email,
             @RequestParam("password") String password
     ) {
-        if(userService.getUserEmail(email).isPresent()){
-        return;
-        } else {
         User user = new User(email, password, LocalDateTime.now(), false);
         userService.registerUser(user);
-        }
     }
+
 
     @PutMapping("/user/registerConfirm")
     public void registerConfirm(
