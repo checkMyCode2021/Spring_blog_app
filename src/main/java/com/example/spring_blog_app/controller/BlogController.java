@@ -40,9 +40,11 @@ public class BlogController {
         return "post";
     }
 
+
     @GetMapping("/addPost")
     public String addPost(Model model){
         model.addAttribute("post", new Post());
         return "addPost";
     }
+
 }
