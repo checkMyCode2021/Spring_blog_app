@@ -1,5 +1,6 @@
 package com.example.spring_blog_app.controller;
 
+import com.example.spring_blog_app.model.Category;
 import com.example.spring_blog_app.model.Post;
 import com.example.spring_blog_app.service.PostService;
 import com.example.spring_blog_app.service.UserService;
@@ -9,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Controller
@@ -43,6 +46,8 @@ public class BlogController {
     @GetMapping("/addPost")
     public String addPost(Model model){
         model.addAttribute("post", new Post());
+        model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
         return "addPost";
     }
+
 }
