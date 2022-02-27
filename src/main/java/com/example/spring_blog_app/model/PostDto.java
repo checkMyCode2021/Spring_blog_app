@@ -12,12 +12,12 @@ import javax.validation.constraints.Size;
 @Data
 public class PostDto {
     @NotBlank(message = "Title must be not empty")
-    @Size(min = 5, max = 5000, message = "Tile must be not longer than {value}")
+    @Size(min = 5, max = 100, message = "Title must have number of characters between {min} to {max}")
     private String title;
     @NotBlank(message = "Content must be not empty")
     @Size(min = 10, max = 5000, message = "Message must have number of characters between {min} to {max}")
     private String content;
-    @NotBlank(message = "Category must be not empty")
+//    @NotBlank(message = "Category must be not empty")
     private Category category;
 
 }
