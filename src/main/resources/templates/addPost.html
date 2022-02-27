@@ -17,14 +17,14 @@
                     <h1> Add post</h1><br>
                     <form th:action="@{/addPost}" th:method="Post" th:object="${postDto}">
                         <div class="form-group">
-                            <p th:errors="*{title}">title error</p>
+                            <div class="alert alert-danger"  style="font-size:16px" th:errors="*{title}">title error</div>
                             <input class="form-control" th:type="text" th:field="*{title}" placeholder="Insert title here"><br>
-                            <p th:errors="*{category}">category error</p>
+                            <div class="alert alert-danger" style="font-size:16px" th:errors="*{category}">category error</div>
                             <select class="form-select" th:field="*{category}">
                                 <option th:each="cat : ${categories}" th:value="${cat}"
                                         th:text="${cat.getCategoryName()}"></option>
                             </select><br>
-                            <p th:errors="*{content}">content error</p>
+                            <div class="alert alert-danger" style="font-size:16px" th:errors="*{content}">content error</div>
                             <textarea class="form-control " th:field="*{content}" placeholder="Insert content here">
                             </textarea><br>
                             <input class="btn btn-primary mt-2 float-center" th:type="submit" th:value="'add post'">

@@ -100,7 +100,7 @@ public class BlogRESTController {
     public User getUserById(
             @RequestParam("email") String email
     ) {
-        return userService.getUserEmail(email).orElse(new User());
+        return userService.getUserByEmail(email).orElse(new User());
     }
 
     @PostMapping("/post/addPost")

@@ -1,8 +1,6 @@
 package com.example.spring_blog_app.controller;
 
-import com.example.spring_blog_app.model.Category;
-import com.example.spring_blog_app.model.Post;
-import com.example.spring_blog_app.model.PostDto;
+import com.example.spring_blog_app.model.*;
 import com.example.spring_blog_app.service.PostService;
 import com.example.spring_blog_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -33,14 +32,14 @@ public class BlogController {
 
 
     @GetMapping("/")
-    public String home(Model model){
+    public String home(Model model) {
         model.addAttribute("posts", postService.getAllPosts());
         return "index";
     }
 
     @GetMapping("/posts&{postId}")
     public String getPost(
-            @PathVariable("postId") int postId, Model model){
+            @PathVariable("postId") int postId, Model model) {
         Optional<Post> postOptional = postService.getPostById(postId);
         if (postOptional.isPresent()) {
             model.addAttribute("post", postOptional.get());
@@ -49,7 +48,7 @@ public class BlogController {
     }
 
     @GetMapping("/addPost")
-    public String addPost(Model model){
+    public String addPost(Model model) {
         model.addAttribute("postDto", new PostDto());
         model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
         return "addPost";
@@ -61,13 +60,38 @@ public class BlogController {
             @ModelAttribute PostDto postDto,
             BindingResult bindingResult,
             Model model
-    ){
-        if (bindingResult.hasErrors()){
+    ) {
+        if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().stream().forEach(fieldError -> System.out.println(fieldError.toString()));
             model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
             return "addPost";
         }
-        postService.addPost(postDto.getTitle(), postDto.getContent(),postDto.getCategory(),userService.getUserById(1).get());
+        postService.addPost(postDto.getTitle(), postDto.getContent(), postDto.getCategory(), userService.getUserById(1).get());
         return "redirect:/";
+    }
+
+    @GetMapping("/register")
+    public String addUser(Model model) {
+        model.addAttribute("userDto", new UserDto());
+        return "addUser";
+    }
+
+    @PostMapping("register")
+    public String addUser(
+            @Valid
+            @ModelAttribute UserDto userDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "addUser";
+        }
+        if (userService.getUserByEmail(userDto.getEmail()).isPresent()){
+            model.addAttribute("emailError", "e-mail address is not unique");
+            return "addUser";
+        }
+        userService.registerUser(new User(userDto.getEmail(), userDto.getPassword(), LocalDateTime.now(), true));
+        return "redirect:/";
+
     }
 }

@@ -17,7 +17,6 @@ public class PostDto {
     @NotBlank(message = "Content must be not empty")
     @Size(min = 10, max = 5000, message = "Message must have number of characters between {min} to {max}")
     private String content;
-//    @NotBlank(message = "Category must be not empty")
     private Category category;
 
 }
