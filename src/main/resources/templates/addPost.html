@@ -2,26 +2,29 @@
 <html lang="en">
 
     <head th:replace="fragments/head.html :: head"></head>
+
     <body>
 
     <nav th:replace="fragments/navigation.html :: nav"></nav>
         <!-- Page Header-->
-        <header th:replace="fragments/header.html :: header(title='Mark\'s blog',subtitle='Junior Java Developer')"></header>
+        <header th:replace="fragments/header.html :: header(title='Mark\'s blog',subtitle='Junior Java Developer Candidate')"></header>
         <!-- Main Content-->
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7" th:if="${post != null}">
-
-                    <h1> Add post form</h1>
-                   <form th:action="@{/addPost}" th:method="Post" th:object="${post}">
-                        <input th:type="text" th:field="*{title}" placeholder="Insert title here"><br>
-                        <textarea th:field="*{content}" placeholder="Insert content here">
-                        </textarea><br>
-                        <select th:field="*{category}">
+                    <h1> Add post form</h1><br>
+                    <p> Category:</p>
+                    <form th:action="@{/addPost}" th:method="Post" th:object="${post}">
+                        <select class="form-select" th:field="*{category}">
                             <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.getCategoryName()}"></option>
                         </select><br>
-                       <input th:type="submit" th:value="'add post'">
-                   </form>
+                        <div class="form-group">
+                            <input  class="form-control" th:type="text" th:field="*{title}" placeholder="Insert title here"><br>
+                            <textarea class="form-control" th:field="*{content}" placeholder="Insert content here">
+                        </textarea><br>
+                            <input class="btn btn-primary mt-2 float-center" th:type="submit" th:value="'add post'">
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
