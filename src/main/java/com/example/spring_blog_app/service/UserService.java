@@ -1,14 +1,18 @@
 package com.example.spring_blog_app.service;
 
 import com.example.spring_blog_app.configuration.EncoderAlgorithm;
+import com.example.spring_blog_app.model.Role;
 import com.example.spring_blog_app.model.User;
+import com.example.spring_blog_app.repositories.RoleRepository;
 import com.example.spring_blog_app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -17,8 +21,13 @@ public class UserService {
     UserRepository userRepository;
     @Autowired
     EncoderAlgorithm encoderAlgorithm;
+    @Autowired
+    RoleRepository roleRepository;
 
     public void registerUser(User user){
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleRepository.getById(1));  // default role is USER with ID = 1
+        user.setRoles(roles);
         user.setPassword(encoderAlgorithm.getPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
     }

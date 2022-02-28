@@ -92,6 +92,18 @@ public class BlogController {
         }
         userService.registerUser(new User(userDto.getEmail(), userDto.getPassword(), LocalDateTime.now(), true));
         return "redirect:/";
+    }
 
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+
+    @GetMapping("/login&error={loginError}")
+    public String login(@PathVariable("loginError") Boolean loginError, Model model
+    ) {
+        System.out.println(loginError.getClass());
+        model.addAttribute("loginError", loginError);
+        return "login";
     }
 }

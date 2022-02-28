@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,6 +23,8 @@ public class User {
     private String password;
     private LocalDateTime registrationDateTime;
     private boolean status;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Set<Role> roles = new HashSet<>();
 
     public User(String email, String password, LocalDateTime registrationDateTime, boolean status) {
         this.email = email;
