@@ -4,6 +4,7 @@ import com.example.spring_blog_app.model.*;
 import com.example.spring_blog_app.service.PostService;
 import com.example.spring_blog_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,25 +33,28 @@ public class BlogController {
 
 
     @GetMapping("/")
-    public String home(Model model) {
+    public String home(Model model, Authentication auth) {
         model.addAttribute("posts", postService.getAllPosts());
+        model.addAttribute("auth", auth);
         return "index";
     }
 
     @GetMapping("/posts&{postId}")
     public String getPost(
-            @PathVariable("postId") int postId, Model model) {
+            @PathVariable("postId") int postId, Model model, Authentication auth) {
         Optional<Post> postOptional = postService.getPostById(postId);
         if (postOptional.isPresent()) {
             model.addAttribute("post", postOptional.get());
+            model.addAttribute("auth", auth);
         }
         return "post";
     }
 
     @GetMapping("/addPost")
-    public String addPost(Model model) {
+    public String addPost(Model model, Authentication auth) {
         model.addAttribute("postDto", new PostDto());
         model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
+        model.addAttribute("auth", auth);
         return "addPost";
     }
 
@@ -71,8 +75,9 @@ public class BlogController {
     }
 
     @GetMapping("/register")
-    public String addUser(Model model) {
+    public String addUser(Model model, Authentication auth) {
         model.addAttribute("userDto", new UserDto());
+        model.addAttribute("auth",auth);
         return "addUser";
     }
 
@@ -95,15 +100,17 @@ public class BlogController {
     }
 
     @GetMapping("/login")
-    public String login(){
+    public String login(Model model, Authentication auth){
+        model.addAttribute("auth", auth);
         return "login";
     }
 
     @GetMapping("/login&error={loginError}")
-    public String login(@PathVariable("loginError") Boolean loginError, Model model
+    public String login(@PathVariable("loginError") Boolean loginError, Model model, Authentication auth
     ) {
         System.out.println(loginError.getClass());
         model.addAttribute("loginError", loginError);
+        model.addAttribute("auth", auth);
         return "login";
     }
 }
