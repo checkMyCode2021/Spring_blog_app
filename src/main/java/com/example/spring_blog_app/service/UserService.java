@@ -7,6 +7,8 @@ import com.example.spring_blog_app.repositories.RoleRepository;
 import com.example.spring_blog_app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -23,6 +25,10 @@ public class UserService {
     EncoderAlgorithm encoderAlgorithm;
     @Autowired
     RoleRepository roleRepository;
+
+    public UserDetails getCredential(Authentication auth){
+        return auth != null ? (UserDetails) auth.getPrincipal() :null;
+    }
 
     public void registerUser(User user){
         Set<Role> roles = new HashSet<>();

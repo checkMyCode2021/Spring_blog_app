@@ -5,6 +5,7 @@ import com.example.spring_blog_app.service.PostService;
 import com.example.spring_blog_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,7 +36,7 @@ public class BlogController {
     @GetMapping("/")
     public String home(Model model, Authentication auth) {
         model.addAttribute("posts", postService.getAllPosts());
-        model.addAttribute("auth", auth);
+        model.addAttribute("auth", userService.getCredential(auth));
         return "index";
     }
 
@@ -63,14 +64,18 @@ public class BlogController {
             @Valid
             @ModelAttribute PostDto postDto,
             BindingResult bindingResult,
-            Model model
+            Model model,
+            Authentication auth
     ) {
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().stream().forEach(fieldError -> System.out.println(fieldError.toString()));
             model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
             return "addPost";
         }
-        postService.addPost(postDto.getTitle(), postDto.getContent(), postDto.getCategory(), userService.getUserById(1).get());
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String loggedEmail = userDetails.getUsername();
+        postService.addPost(postDto.getTitle(), postDto.getContent(), postDto.getCategory(), 
+                userService.getUserByEmail(loggedEmail).get());
         return "redirect:/";
     }
 
