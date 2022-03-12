@@ -117,11 +117,16 @@ public class BlogController {
     }
 
     @GetMapping("/deletePost&{postId}")
-    public String deletePost(@PathVariable("postId") int postId){
+    public String deletePost(@PathVariable("postId") int postId, Model model, Authentication auth){
         if (postService.getPostById(postId).isPresent()) {
             postService.deletePostById(postId);
+            return "redirect:/";
+        } else {
+            model.addAttribute("errorMessage", "Delete action aborted! There is no post with id = " + postId);
+            model.addAttribute("posts", postService.getAllPosts());
+            model.addAttribute("auth", userService.getCredential(auth));
+            return "index";
         }
-        return "redirect:/";
     }
 
     @GetMapping("/updatePost&{postId}")
@@ -135,8 +140,10 @@ public class BlogController {
             model.addAttribute("auth", userService.getCredential(auth));
             return "addPost";
         }
-        return "redirect:/";
-    }
+        model.addAttribute("errorMessage", "Update action aborted! There is no post with id = " + postId);
+        model.addAttribute("posts", postService.getAllPosts());
+        model.addAttribute("auth", userService.getCredential(auth));
+        return "index";    }
 
     @PostMapping("/updatePost&{postId}")
     public String udatePost(

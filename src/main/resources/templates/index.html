@@ -14,7 +14,9 @@
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <!-- Post preview-->
-                    <div th:if="${errorMessage != null}" th:text="${errorMessage}" class="alert alert-danger"  style="font-size:16px" error</div>
+                    <div th:if="${errorMessage != null}" th:text="${errorMessage}"
+                         style="font-size:14px" class="alert alert-danger"> error
+                    </div>
                     <div class="post-preview" th:each="post : ${posts}">
                         <a th:href="@{'/posts&' + ${post.getPostId()}}">
                             <h2 class="post-title" th:text="${post.getTitle().toUpperCase()}"> post title </h2>
