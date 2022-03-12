@@ -9,10 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -46,7 +43,7 @@ public class BlogController {
         Optional<Post> postOptional = postService.getPostById(postId);
         if (postOptional.isPresent()) {
             model.addAttribute("post", postOptional.get());
-            model.addAttribute("auth", auth);
+            model.addAttribute("auth", userService.getCredential(auth));
         }
         return "post";
     }
@@ -55,7 +52,7 @@ public class BlogController {
     public String addPost(Model model, Authentication auth) {
         model.addAttribute("postDto", new PostDto());
         model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
-        model.addAttribute("auth", auth);
+        model.addAttribute("auth", userService.getCredential(auth));
         return "addPost";
     }
 
@@ -82,7 +79,7 @@ public class BlogController {
     @GetMapping("/register")
     public String addUser(Model model, Authentication auth) {
         model.addAttribute("userDto", new UserDto());
-        model.addAttribute("auth",auth);
+        model.addAttribute("auth",userService.getCredential(auth));
         return "addUser";
     }
 
@@ -106,7 +103,7 @@ public class BlogController {
 
     @GetMapping("/login")
     public String login(Model model, Authentication auth){
-        model.addAttribute("auth", auth);
+        model.addAttribute("auth", userService.getCredential(auth));
         return "login";
     }
 
@@ -115,7 +112,46 @@ public class BlogController {
     ) {
         System.out.println(loginError.getClass());
         model.addAttribute("loginError", loginError);
-        model.addAttribute("auth", auth);
+        model.addAttribute("auth", userService.getCredential(auth));
         return "login";
+    }
+
+    @GetMapping("/deletePost&{postId}")
+    public String deletePost(@PathVariable("postId") int postId){
+        if (postService.getPostById(postId).isPresent()) {
+            postService.deletePostById(postId);
+        }
+        return "redirect:/";
+    }
+
+    @GetMapping("/updatePost&{postId}")
+    public String updatePost(@PathVariable("postId") Integer postId, Model model, Authentication auth) {
+        if (postService.getPostById(postId).isPresent()) {
+            Post postToUpdate = postService.getPostById(postId).get();
+            PostDto postDto = new PostDto(postToUpdate.getTitle(), postToUpdate.getContent(), postToUpdate.getCategory());
+            model.addAttribute("postDto", postDto);
+            model.addAttribute("postId", postId);
+            model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
+            model.addAttribute("auth", userService.getCredential(auth));
+            return "addPost";
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("/updatePost&{postId}")
+    public String udatePost(
+            @PathVariable("postId") int postId,
+            @Valid @ModelAttribute("postDto") PostDto postDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
+            return "addPost";
+        }
+        if (postService.updatePost(postId, postDto)) {
+            return "redirect:/posts&" + postId;
+        }
+        return "redirect:/";
     }
 }

@@ -13,7 +13,7 @@
     <!-- Main Content-->
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="col-md-10 col-lg-8 col-xl-7" th:if="${postId ==null }">
                     <h1> Add post</h1><br>
                     <form th:action="@{/addPost}" th:method="Post" th:object="${postDto}">
                         <div class="form-group">
@@ -28,6 +28,24 @@
                             <textarea class="form-control " th:field="*{content}" placeholder="Insert content here">
                             </textarea><br>
                             <input class="btn btn-primary mt-2 float-center" th:type="submit" th:value="'add post'">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-10 col-lg-8 col-xl-7" th:if="${postId !=null }">
+                    <h1>Update post</h1><br>
+                    <form th:action="@{'/updatePost&' + ${postId}}" th:method="Post" th:object="${postDto}">
+                        <div class="form-group">
+                            <div class="alert alert-danger"  style="font-size:16px" th:errors="*{title}">title error</div>
+                            <input class="form-control" th:type="text" th:field="*{title}" placeholder="Insert title here"><br>
+                            <div class="alert alert-danger" style="font-size:16px" th:errors="*{category}">category error</div>
+                            <select class="form-select" th:field="*{category}">
+                                <option th:each="cat : ${categories}" th:value="${cat}"
+                                        th:text="${cat.getCategoryName()}"></option>
+                            </select><br>
+                            <div class="alert alert-danger" style="font-size:16px" th:errors="*{content}">content error</div>
+                            <textarea class="form-control " th:field="*{content}" placeholder="Insert content here">
+                            </textarea><br>
+                            <input class="btn btn-primary mt-2 float-center" th:type="submit" th:value="'update post'">
                         </div>
                     </form>
                 </div>

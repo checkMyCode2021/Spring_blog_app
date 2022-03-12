@@ -2,6 +2,7 @@ package com.example.spring_blog_app.service;
 
 import com.example.spring_blog_app.model.Category;
 import com.example.spring_blog_app.model.Post;
+import com.example.spring_blog_app.model.PostDto;
 import com.example.spring_blog_app.model.User;
 import com.example.spring_blog_app.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,22 @@ public class PostService {
 
     public void addPost(String title, String content, Category category, User author){
         postRepository.save(new Post(title, content, LocalDateTime.now(),category, author));
+    }
+
+    public boolean updatePost(int postId, PostDto postDto) {
+        if (getPostById(postId).isPresent()) {
+            Post post = getPostById(postId).get();
+            post.setTitle(postDto.getTitle());
+            post.setContent(postDto.getContent());
+            post.setCategory(postDto.getCategory());
+            postRepository.save(post);
+            return true;
+        }
+        return false;
+    }
+
+    public void deletePostById(int postId){
+        postRepository.deleteById(postId);
     }
 
     public List<Post> getAllPosts(){
